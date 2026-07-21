@@ -132,22 +132,9 @@ python load_test.py --requests 500 --concurrency 20
 This prints throughput (req/sec) and p50/p95/p99 latency — genuine numbers
 you measured yourself, not made up ones.
 
-## Talking points for interviews
 
-- **Why base62 IDs instead of random strings?** Avoids collision-retry
-  loops under concurrent writes; codes are dense and short.
-- **Why a separate Click table instead of a counter column?** Keeps
-  analytics writes from locking/contending with the URL table, and makes
-  it easy to swap in a time-series store later without touching URL data.
-- **Why token bucket over fixed-window rate limiting?** Allows legitimate
-  bursts while still capping sustained rate — fixed windows let clients
-  double their effective rate at window boundaries.
-- **What would you change for real scale?** Move click-logging off the
-  request path (SQS + worker), move from SQLite to DynamoDB/Postgres,
-  add a CDN/edge cache for redirects, and shard by short_code prefix if a
-  single DB becomes a bottleneck.
 
-## Deploying to AWS (optional next step)
+## Deploying to AWS
 
 - Package as a container and deploy to **ECS Fargate** or convert to a
   **Lambda** behind **API Gateway**
